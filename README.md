@@ -44,7 +44,7 @@ module "kinesis_tf" {
 }
 ```
 
-From a shell:
+To get the module from github:
 ```bashp
-terraform plan
+terraform get
 ```
