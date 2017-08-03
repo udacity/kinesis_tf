@@ -9,6 +9,6 @@ resource "aws_kinesis_stream" "mod" {
   ]
 
   tags {
-    ForwardToFirehoseStream = "${aws_s3_bucket.bucket.bucket}"
+    ForwardToFirehoseStream = "${aws_kinesis_firehose_delivery_stream.mod.name}"
   }
 }

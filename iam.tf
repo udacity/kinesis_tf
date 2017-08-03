@@ -101,8 +101,8 @@ resource "aws_iam_role" "gateway_execution_role" {
 EOF
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
+resource "aws_iam_role" "lambda_role" {
+  name = "${var.stream_name}-lambda-role"
 
   assume_role_policy = <<EOF
 {
@@ -121,9 +121,9 @@ resource "aws_iam_role" "iam_for_lambda" {
 EOF
 }
 
-resource "aws_iam_role_policy" "iam_for_lambda_policy" {
-  name = "iam_for_lambda_policy"
-  role = "${aws_iam_role.iam_for_lambda.id}"
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "${var.stream_name}-lambda-policy"
+  role = "${aws_iam_role.lambda_role.id}"
 
   policy = <<EOF
 {
@@ -139,7 +139,15 @@ resource "aws_iam_role_policy" "iam_for_lambda_policy" {
         },
         {
             "Action": [
-                "kinesis:ListStreams",
+                "kinesis:ListStreams"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
                 "kinesis:DescribeStream",
                 "kinesis:GetShardIterator",
                 "kinesis:GetRecords",
@@ -147,7 +155,7 @@ resource "aws_iam_role_policy" "iam_for_lambda_policy" {
             ],
             "Effect": "Allow",
             "Resource": [
-                "*"
+              "arn:aws:kinesis:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stream/${var.stream_name}"
             ]
         },
         {
@@ -161,7 +169,78 @@ resource "aws_iam_role_policy" "iam_for_lambda_policy" {
             "Resource": [
                 "*"
             ]
+        },
+        {
+          "Action": [
+            "dynamodb:DescribeStream",
+            "dynamodb:DescribeTable",
+            "dynamodb:GetItem",
+            "dynamodb:GetRecords",
+            "dynamodb:GetShardIterator",
+            "dynamodb:ListStreams",
+            "dynamodb:ListTables"
+          ],
+          "Effect": "Allow",
+          "Resource": [
+            "*"
+          ]
         }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role" "firehose_role" {
+  name = "${var.stream_name}-firehose-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "firehose_policy" {
+  name = "${var.stream_name}-firehose-policy"
+  role = "${aws_iam_role.firehose_role.id}"
+
+  policy = <<EOF
+{
+    "Statement": [
+      {
+          "Effect": "Allow",
+          "Action": [
+              "s3:AbortMultipartUpload",
+              "s3:GetBucketLocation",
+              "s3:GetObject",
+              "s3:ListBucket",
+              "s3:ListBucketMultipartUploads",
+              "s3:PutObject"
+          ],
+          "Resource": [
+              "arn:aws:s3:::${aws_s3_bucket.mod.bucket}",
+              "arn:aws:s3:::${aws_s3_bucket.mod.bucket}/*"
+          ]
+      },
+      {
+         "Effect": "Allow",
+         "Action": [
+             "logs:PutLogEvents"
+         ],
+         "Resource": [
+             "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.mod.name}:log-stream:${aws_cloudwatch_log_stream.mod.name}"
+         ]
+      }
     ]
 }
 EOF
