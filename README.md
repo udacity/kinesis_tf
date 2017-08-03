@@ -1,4 +1,14 @@
 # Terraform module for creating Kinesis Applications
+
+Creates:
+- A kinesis stream
+- An S3 bucket for backing up events
+- A kinesis firehose to S3 for backing up every record
+- A lambda to copy from the stream to the firehose
+- Cloudwatch error logging for the firehose
+- All applicable IAM roles and policies, including a read-only role for KCL applications
+- (Optionally) an APIKey secured API gateway for posting to the stream from outside AWS (e.g. GAE)
+
 Supports:
   - backup to an s3 bucket via lambda -> firehose
   - optional API Gateway endpoints for writing to the stream
