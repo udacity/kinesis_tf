@@ -1,7 +1,7 @@
-resource "aws_lambda_function" "mod" {
+data "aws_lambda_function" "mod" {
   s3_bucket     = "lambda-package-cache"
   s3_key        = "LambdaStreamToFirehose-1.4.5.zip"
-  function_name = "LambdaStreamToFirehose"
+  function_name = "${var.stream_name}-LambdaStreamToFirehose"
   role          = "${aws_iam_role.lambda_role.arn}"
   handler       = "index.handler"
   runtime       = "nodejs4.3"
