@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "mod" {
-  bucket = "${var.stream_name}-event-backup"
+  bucket = "udacity-${var.stream_name}-event-backup"
   acl    = "private"
 }
 
