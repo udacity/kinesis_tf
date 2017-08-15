@@ -1,3 +1,5 @@
+variable "name" {}
+
 variable "stream_name" {}
 
 variable "create_api_gateway" {
