@@ -18,6 +18,10 @@ variable "application_name" {}
 
 variable "aws_region" {}
 
+variable "lambda_s3_bucket" {}
+
+variable "lambda_s3_key" {}
+
 output "invoke_url" {
   value = "${aws_api_gateway_deployment.mod.invoke_url}"
 }
