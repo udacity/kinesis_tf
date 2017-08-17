@@ -1,3 +1,25 @@
+resource "aws_iam_policy" "write_policy" {
+  name        = "${var.stream_name}-write-policy"
+  description = "Policy allowing put record/records to a Kinesis Stream"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:PutRecord"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stream/${var.stream_name}"
+            ]
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_policy" "read_policy" {
   name        = "${var.stream_name}-read-policy"
   description = "Policy to allow reading from the ${var.stream_name} stream"
@@ -46,7 +68,7 @@ resource "aws_iam_policy" "read_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "write_policy" {
+resource "aws_iam_role_policy" "write_role_policy" {
   count = "${var.create_api_gateway}"
   name  = "${var.stream_name}-write-policy"
   role  = "${aws_iam_role.gateway_execution_role.id}"
