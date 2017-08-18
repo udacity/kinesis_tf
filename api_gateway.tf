@@ -1,17 +1,17 @@
 resource "aws_api_gateway_rest_api" "mod" {
   count       = "${var.create_api_gateway}"
-  name        = "${var.stream_name}-${var.environment_name}-api"
+  name        = "${var.stream_name}-api"
   description = "Allows posting of messages to the example stream"
 }
 
 resource "aws_api_gateway_api_key" "mod" {
   count = "${var.create_api_gateway}"
-  name  = "${var.stream_name}-${var.environment_name}-api-key"
+  name  = "${var.stream_name}-api-key"
 }
 
 resource "aws_api_gateway_usage_plan" "mod" {
   count = "${var.create_api_gateway}"
-  name  = "${var.stream_name}-${var.environment_name}-plan"
+  name  = "${var.stream_name}-plan"
 
   api_stages {
     api_id = "${aws_api_gateway_rest_api.mod.id}"
