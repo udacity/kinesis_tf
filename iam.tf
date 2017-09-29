@@ -9,7 +9,8 @@ resource "aws_iam_policy" "write_policy" {
         {
             "Effect": "Allow",
             "Action": [
-                "kinesis:PutRecord"
+                "kinesis:PutRecord",
+                "kinesis:PutRecords"
             ],
             "Resource": [
                 "arn:aws:kinesis:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stream/${var.stream_name}"
