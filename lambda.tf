@@ -1,4 +1,6 @@
 resource "aws_lambda_function" "mod" {
+  count = "${var.create_s3_backup}"
+
   s3_bucket     = "${var.lambda_s3_bucket}"
   s3_key        = "${var.lambda_s3_key}"
   function_name = "${var.stream_name}-LambdaStreamToFirehose"
@@ -14,6 +16,8 @@ resource "aws_lambda_function" "mod" {
 }
 
 resource "aws_lambda_event_source_mapping" "mod" {
+  count = "${var.create_s3_backup}"
+
   batch_size        = 100
   event_source_arn  = "${aws_kinesis_stream.mod.arn}"
   enabled           = true

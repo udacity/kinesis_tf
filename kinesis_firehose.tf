@@ -1,10 +1,14 @@
 resource "aws_s3_bucket" "mod" {
+  count = "${var.create_api_gateway}"
+
   bucket = "udacity-${var.stream_name}-event-backup"
   acl    = "private"
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "mod" {
-  name        = "${var.stream_name}-backup"
+  name  = "${var.stream_name}-backup"
+  count = "${var.create_api_gateway}"
+
   destination = "s3"
 
   s3_configuration {

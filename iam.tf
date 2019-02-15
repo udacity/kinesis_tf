@@ -70,9 +70,10 @@ EOF
 }
 
 resource "aws_iam_role_policy" "write_role_policy" {
-  count = "${var.create_api_gateway}"
   name  = "${var.stream_name}-write-policy"
-  role  = "${aws_iam_role.gateway_execution_role.id}"
+  count = "${var.create_api_gateway}"
+
+  role = "${aws_iam_role.gateway_execution_role.id}"
 
   policy = <<EOF
 {
@@ -104,8 +105,8 @@ EOF
 }
 
 resource "aws_iam_role" "gateway_execution_role" {
-  count = "${var.create_api_gateway}"
   name  = "${var.stream_name}-gateway-execution-role"
+  count = "${var.create_api_gateway}"
 
   assume_role_policy = <<EOF
 {
@@ -125,7 +126,8 @@ EOF
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.stream_name}-lambda-role"
+  name  = "${var.stream_name}-lambda-role"
+  count = "${var.create_s3_backup}"
 
   assume_role_policy = <<EOF
 {
@@ -145,7 +147,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
-  name = "${var.stream_name}-lambda-policy"
+  name  = "${var.stream_name}-lambda-policy"
+  count = "${var.create_s3_backup}"
+
   role = "${aws_iam_role.lambda_role.id}"
 
   policy = <<EOF
@@ -214,7 +218,8 @@ EOF
 }
 
 resource "aws_iam_role" "firehose_role" {
-  name = "${var.stream_name}-firehose-role"
+  name  = "${var.stream_name}-firehose-role"
+  count = "${var.create_s3_backup}"
 
   assume_role_policy = <<EOF
 {
@@ -234,8 +239,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "firehose_policy" {
-  name = "${var.stream_name}-firehose-policy"
-  role = "${aws_iam_role.firehose_role.id}"
+  name  = "${var.stream_name}-firehose-policy"
+  count = "${var.create_s3_backup}"
+  role  = "${aws_iam_role.firehose_role.id}"
 
   policy = <<EOF
 {

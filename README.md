@@ -3,8 +3,8 @@
 Creates:
 - A kinesis stream
 - An S3 bucket for backing up events
-- A kinesis firehose to S3 for backing up every record
-- A lambda to copy from the stream to the firehose
+- Optionally A kinesis firehose to S3 for backing up every record
+- Optionally A lambda to copy from the stream to the firehose
 - Cloudwatch error logging for the firehose
 - All applicable IAM roles and policies, including a read-only role for KCL applications
 - (Optionally) an APIKey secured API gateway for posting to the stream from outside AWS (e.g. GAE)
@@ -51,6 +51,7 @@ module "kinesis_tf" {
   application_name   = "RegistrarTermImporter"
   aws_region         = "${var.aws_region}"
   create_api_gateway = true
+  create_s3_backup = false
 }
 ```
 

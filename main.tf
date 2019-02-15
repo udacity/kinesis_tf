@@ -1,9 +1,11 @@
-variable "name" {}
-
 variable "stream_name" {}
 
 variable "create_api_gateway" {
   default = false
+}
+
+variable "create_s3_backup" {
+  default = true
 }
 
 variable "shard_count" {
@@ -20,9 +22,13 @@ variable "application_name" {}
 
 variable "aws_region" {}
 
-variable "lambda_s3_bucket" {}
+variable "lambda_s3_bucket" {
+  default = ""
+}
 
-variable "lambda_s3_key" {}
+variable "lambda_s3_key" {
+  default = ""
+}
 
 output "invoke_url" {
   value = "${aws_api_gateway_deployment.mod.invoke_url}"

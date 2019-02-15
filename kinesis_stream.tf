@@ -10,10 +10,10 @@ resource "aws_kinesis_stream" "mod" {
     "ReadProvisionedThroughputExceeded",
     "WriteProvisionedThroughputExceeded",
     "IncomingRecords",
-    "IteratorAgeMilliseconds"
+    "IteratorAgeMilliseconds",
   ]
 
   tags {
-    ForwardToFirehoseStream = "${aws_kinesis_firehose_delivery_stream.mod.name}"
+    ForwardToFirehoseStream = "${var.create_s3_backup ? aws_kinesis_firehose_delivery_stream.mod.name : ""}"
   }
 }
